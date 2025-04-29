@@ -1,35 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Navbar from './components/Navbar';
+import EmployeeForm from './components/EmployeeForm';
+import EmployeeList from './components/EmployeeList';
+import { useState } from 'react';
+import { Employee } from './types/Employee';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleEdit = (employee: Employee) => setSelectedEmployee(employee);
+  const handleSaved = () => {
+    setSelectedEmployee(null);
+    setRefreshKey(prev => prev + 1);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div>
+      <Navbar />
+      <div className="container">
+        <EmployeeForm selectedEmployee={selectedEmployee} onSaved={handleSaved} />
+        <EmployeeList key={refreshKey} onEdit={handleEdit} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
